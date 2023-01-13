@@ -10,6 +10,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -41,44 +42,41 @@ fun ArtScreen() {
     val artist = listOf("Leonardo da Vinci ", "Vincent Van Gogh", "Rembrandt", "Hans Holbein the Younger", "Amedeo Modigliani")
     val artImage =  listOf(R.drawable.monalisa, R.drawable.strawhat,R.drawable.rembrandt, R.drawable.herman,  R.drawable.sailorshouse)
     val artworkTitle = listOf("The Mona Lisa" , "Self-Portrait with a Straw Hat", "Self-Portrait", "Herman von Wedigh III",  "Girl in a sailor’s blouse")
-
-    var next by remember { mutableStateOf(0) }
-    if (next >= 5) {
-        next *= 0
-    }
-
-    
-
-
-
+    var next by remember{ mutableStateOf(0) }
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight(),
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.spacedBy(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.height(20.dp))
         ArtPiece(
             artImg = artImage[next],
-            artName = artworkTitle[next]
+            artName = artworkTitle[next],
+            modifier = Modifier.align(CenterHorizontally)
         )
-        Spacer(modifier = Modifier.height(20.dp))
         InfoCards(
-            title = artworkTitle[next],
-            author =  artist[next],
+            title = artworkTitle[next] ,
+            author = artist[next] ,
             year = year[next]
         )
-        Spacer(modifier = Modifier.height(20.dp))
         Row(
             horizontalArrangement = Arrangement.SpaceAround
         ) {
             ButtonNavigation(
-                txt = "Previous" , clicked = {next-- },
+                txt = "Previous" ,
                 modifier = Modifier.padding(end = 10.dp),
+                clicked = {
+                    if (next == 0) next += 4 else next--
+                }
             )
             Spacer(modifier = Modifier.padding(start = 20.dp))
             ButtonNavigation(
-                txt = "Next" , clicked = {next++},
+                txt = "Next" ,
+                clicked = {
+                    if (next == 4) next -= 4 else next++
+                }
             )
         }
     }
@@ -87,20 +85,27 @@ fun ArtScreen() {
 
 
 @Composable
-fun ArtPiece(artImg: Int, artName: String) {
+fun ArtPiece(
+    artImg: Int, 
+    artName: String,
+    modifier: Modifier = Modifier
+) {
     Image(
         painter = painterResource(id = artImg),
         contentDescription = artName,
     )
 }
 @Composable
-fun InfoCards(title: String, author: String, year: String) {
+fun InfoCards(
+    title: String, 
+    author: String, 
+    year: String,
+    modifier: Modifier = Modifier
+) {
     Card(
         elevation = 5.dp,
     ) {
-        Column(
-
-        ) {
+        Column{
             Text(
                 text = title
             )
@@ -137,7 +142,7 @@ fun ButtonNavigation(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun ArtSpace() {
     ArtScreen()
